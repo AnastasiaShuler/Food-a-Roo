@@ -34,6 +34,7 @@ def startUp():
                  :$$F      ?k"Re                Aug. 7, 2014
            .   .$$P/         **'$$B..
            ^:e$F"               '"""'
+
                '''
 
     # Clear the terminal; allows for both windows and unix use
@@ -87,14 +88,30 @@ def generateSchedule():
             print 'I\'m sorry, I don\'t understand what you mean. Try again.'
 
     # Open the index
+    print '\nThe Food \'Roo is gathering your recipes. Please wait paitiently ...'
+
     idxDir = idxDir + '/FAR_Storage'
     storage = FileStorage(idxDir)
     idx = storage.open_index(indexname = 'FAR')
 
-    idx.searcher().documents()
+    result = idx.searcher().documents()
+    r = result
+    print 'Yay! We\'ve got a whole pouch full of recipies'
+    print 'You\'ve got ' + str(len(list(r))) + ' recipies in Food \'Roo\'s pouch\n\n'
+
+
+    for item in result:
+        print 'I can get in here'
+
+        print item
+        print item['Name']
 
 def addRecipe():
-    
+    '''
+    addRecipe()
+    Adds a new recipe to the index for use in schedule generation
+    '''
+
     idx = findIndex()
     wrt = idx.writer()
     Q1= 'What would you like to call this recipe? \t'
@@ -102,7 +119,8 @@ def addRecipe():
     Q2 = 'What ingredients are needed? Be sure to specify quantity and seperate with commas\n\t'
     ingrs = raw_input(Q2)
     wrt.add_document(Name = name.decode(), Ingr = ingrs.decode())
-    idx.searcher().documents()
+    wrt.commit()
+
     while True:
         q = 'Would you like to add another? \t'
         c = raw_input(q).lower()
